@@ -45,7 +45,7 @@ namespace hash_table {
             return power;
         }
 
-        static int alg_pir(std::string str) {
+        static int pearson(std::string str) {
             static const unsigned char T[256] = {
               98,  6, 85,150, 36, 23,112,164,135,207,169,  5, 26, 64,165,219,
               61, 20, 68, 89,130, 63, 52,102, 24,229,132,245, 80,216,195,115,
@@ -77,6 +77,7 @@ namespace hash_table {
         friend  bool hash_comparison(const std::string& s1, const std::string& s2);
 
         HashTable(size_t size) : _data(std::vector<Node<K, T>*>(size, nullptr)), _size(size) {}
+
         HashTable(size_t size, size_t str_length) : _data(size, nullptr), _size(size) {
             const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
             std::random_device rd;
@@ -243,7 +244,7 @@ namespace hash_table {
 
     template<typename U = int, typename V = int>
     bool hash_comparison(const std::string& s1, const std::string& s2) {
-        if (HashTable<U, V>::alg_pir(s1) == HashTable<U, V>::alg_pir(s2)) {
+        if (HashTable<U, V>::pearson(s1) == HashTable<U, V>::pearson(s2)) {
             return true;
         }
         return false;

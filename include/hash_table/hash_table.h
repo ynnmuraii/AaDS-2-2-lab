@@ -137,4 +137,115 @@ namespace hash_table {
             return *this;
         }
 
-        
+        void print() const {
+            for (size_t i = 0; i < _data.size(); i++) {
+                if (_data[i] != nullptr) {
+                    Node<K, T>* ptr = _data[i];
+                    while (ptr != nullptr) {
+                        std::cout << "(" << ptr->_pair._key << ", '" << ptr->_pair._value << "') ";
+                        ptr = ptr->_next;
+                    }
+                }
+            }
+            std::cout << std::endl;
+        }
+
+        size_t count(K key) {
+            size_t index = hash(key);
+            int count = 0;
+            Node<K, T>* node = _data[index];
+            while (node != nullptr) {
+                if (node->_pair._key == key) {
+                    count++;
+                }
+                node = node->_next;
+            }
+            return count;
+        }
+
+        bool contains(K key) {
+            size_t index = hash(key);
+            Node<K, T>* node = _data[index];
+            while (node != nullptr) {
+                if (node->_pair._key == key) {
+                    return true;
+                }
+                node = node->_next;
+            }
+            return false;
+        }
+
+        void insert(K key, T value) {
+            size_t index = hash(key);
+            if (contains(key)) {
+                return;
+            }
+
+            if (_data[index] == nullptr) {
+                _data[index] = new Node<K, T>(Pair<K, T>(key, value));
+            }
+            else {
+                Node<K, T>* newNode = new Node<K, T>(Pair<K, T>(key, value));
+                newNode->_next = _data[index];
+                _data[index] = newNode;
+            }
+        }
+
+        void insert_or_assign(const K& key, const T& value) {
+            size_t index = hash(key);
+            Node<K, T>* node = _data[index];
+            while (node != nullptr && node->_pair._key != key) {
+                node = node->_next;
+            }
+            if (node != nullptr) {
+                node->_pair._value = value;
+            }
+            else {
+                Node<K, T>* newNode = new Node<K, T>(Pair<K, T>(key, value));
+                newNode->_next = _data[index];
+                _data[index] = newNode;
+            }
+        }
+
+        T* search(const K& key) {
+            size_t index = hash(key);
+            Node<K, T>* node = _data[index];
+            while (node != nullptr && node->_pair._key != key) {
+                node = node->_next;
+            }
+            if (node != nullptr) {
+                return &node->_pair._value;
+            }
+            return nullptr;
+        }
+
+        bool erase(const K& key) {
+            size_t index = hash(key);
+            Node<K, T>* prev = nullptr;
+            Node<K, T>* current = _data[index];
+            while (current != nullptr && current->_pair._key != key) {
+                prev = current;
+                current = current->_next;
+            }
+            if (current != nullptr) {
+                if (prev == nullptr) {
+                    _data[index] = current->_next;
+                }
+                else {
+                    prev->_next = current->_next;
+                }
+                delete current;
+                return true;
+            }
+            return false;
+        }
+    };
+
+    template<typename U = int, typename V = int>
+    bool hash_comparison(const std::string& s1, const std::string& s2) {
+        if (HashTable<U, V>::alg_pir(s1) == HashTable<U, V>::alg_pir(s2)) {
+            return true;
+        }
+        return false;
+    }
+}
